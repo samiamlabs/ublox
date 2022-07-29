@@ -41,6 +41,7 @@
 #include <ublox_msgs/msg/cfg_cfg.hpp>
 #include <ublox_msgs/msg/cfg_dat.hpp>
 #include <ublox_msgs/msg/inf.h>
+#include <rtcm_msgs/msg/message.hpp>
 // Ublox GPS includes
 #include <ublox_gps/component_interface.hpp>
 #include <ublox_gps/fix_diagnostic.hpp>
@@ -135,6 +136,11 @@ class UbloxNode final : public rclcpp::Node {
   void printInf(const ublox_msgs::msg::Inf &m, uint8_t id);
 
  private:
+
+  /**
+   * @brief Callback for '/ntrip_client/rtcm' subscription to handle RTCM correction data
+   */
+  void rtcmCallback(const rtcm_msgs::msg::Message::SharedPtr msg);
 
   /**
    * @brief Initialize the I/O handling.
@@ -257,6 +263,11 @@ class UbloxNode final : public rclcpp::Node {
   rclcpp::Publisher<ublox_msgs::msg::AidALM>::SharedPtr aid_alm_pub_;
   rclcpp::Publisher<ublox_msgs::msg::AidEPH>::SharedPtr aid_eph_pub_;
   rclcpp::Publisher<ublox_msgs::msg::AidHUI>::SharedPtr aid_hui_pub_;
+
+  /**
+   * @brief Subscription handler for RTCM data
+   */
+  rclcpp::Subscription<rtcm_msgs::msg::Message>::SharedPtr subscription_;
 
   //! Navigation rate in measurement cycles, see CfgRate.msg
   uint16_t nav_rate_{0};
